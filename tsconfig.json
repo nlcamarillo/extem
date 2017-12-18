@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["es6", "es2015", "dom", "scripthost"],
+    "target": "es5",
+    "sourceMap": false,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "allowJs": false,
+    "strictNullChecks": true,
+    "outDir": "lib",
+    "rootDir": "src",
+    "declaration": true
+  },
+  "exclude": [
+    "node_modules/",
+    "lib"
+  ]
+}
