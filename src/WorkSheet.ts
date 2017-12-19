@@ -126,7 +126,7 @@ export default class WorkSheet {
     public getName = () => this.name;
 
     //sheet operations
-    public insertCellMoveDim = (ref, direction: XLSX.Direction) => {
+    public insertCellMoveDim = (ref: XLSX.CellRef, direction: XLSX.Direction) => {
         return this.getCells()
             .filter(Cell.atOrAfterDim(ref, direction))
             .sort(Cell.sortDim(direction, true))

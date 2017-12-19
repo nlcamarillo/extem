@@ -11,7 +11,7 @@ export type CellRef = string;
 export type RangeRef = string;
 
 //excel address related
-export const relAddress = (offset: number, direction: Direction) => {
+export const relAddress = (offset: number, direction: Direction): CellAddress => {
     switch (direction) {
         case HORIZONTAL: return { c: offset, r: 0 };
         case VERTICAL: return { r: offset, c: 0 };
@@ -25,7 +25,7 @@ export const decodeCol = (str: string): number => {
         return 26 * n + l.charCodeAt(0) - 64;
     }, 0) - 1;
 }
-export const encodeCol = (col): string => {
+export const encodeCol = (col: number): string => {
     var s = "";
     for (++col; col; col = Math.floor((col - 1) / 26))
         s = String.fromCharCode(((col - 1) % 26) + 65) + s;
@@ -34,24 +34,24 @@ export const encodeCol = (col): string => {
 
 //cell related
 export const getCellRef = ({ c, r }: CellAddress) => encodeCol(c) + encodeRow(r);
-export const getCellRel = (a: CellAddress, ref) => getCellRef(addAddress(getCellAddress(ref), a));
-export const getCellAddress = (ref) => {
+export const getCellRel = (a: CellAddress, ref: CellRef) => getCellRef(addAddress(getCellAddress(ref), a));
+export const getCellAddress = (ref): CellAddress => {
     let match = ref.match(/([A-Z]*)(\d*)/);
     return { c: decodeCol(match[1]), r: decodeRow(match[2]) }
 }
-export const getCellOffset = (offset: number, direction: Direction, ref) => {
+export const getCellOffset = (offset: number, direction: Direction, ref: CellRef) => {
     return getCellRel(relAddress(offset, direction), ref);
 }
 
 //range related
-export const splitRange = (ref: string) => ref.split(':').slice(0, 2);
-export const getRangeAddress = (ref: string) => splitRange(ref).map(getCellAddress);
+export const splitRange = (ref: RangeRef) => ref.split(':').slice(0, 2);
+export const getRangeAddress = (ref: RangeRef) => splitRange(ref).map(getCellAddress);
 export const getRangeRef = (address: CellAddress[]) => address.map(getCellRef).join(':');
 export const getRangeDim = (ref: string, direction: Direction) => {
     let a = getRangeAddress(ref);
     return 1 + a[1][direction] - a[0][direction];
 }
-export const inRange = range => ref => {
+export const inRange = (range: RangeRef) => (ref: CellRef) => {
     let a = getCellAddress(ref);
     let r = getRangeAddress(range);
     const within = (s, v, e) => (s <= v) && (v <= e);
@@ -60,7 +60,7 @@ export const inRange = range => ref => {
         ((r[0].r < 0) || within(r[0].r, a.r, r[1].r))
     )
 }
-export const getRangeCells = range => {
+export const getRangeCells = (range: RangeRef) => {
     let c, r, a = getRangeAddress(range);
     let cells: string[] = [];
     for (c = a[0].c; c <= a[1].c; c++) {
@@ -72,8 +72,8 @@ export const getRangeCells = range => {
 }
 
 //address arithmatic
-export const addAddress = (aa, ab) => ({ c: aa.c + ab.c, r: aa.r + ab.r });
-export const subtractAddress = (aa, ab) => ({ c: aa.c - ab.c, r: aa.r - ab.r });
+export const addAddress = (aa: CellAddress, ab: CellAddress): CellAddress => ({ c: aa.c + ab.c, r: aa.r + ab.r });
+export const subtractAddress = (aa: CellAddress, ab: CellAddress): CellAddress => ({ c: aa.c - ab.c, r: aa.r - ab.r });
 
 //range and cell evaluation
 //create selectors for the primary and secondary dimension of an address based on the direction

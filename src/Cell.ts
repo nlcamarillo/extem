@@ -9,11 +9,11 @@ export default class Cell {
     // attributes
     public getAttributes = () => this.attributes;
     public ref = () => this.attributes.r;
-    public setRef = (ref) => this.attributes.r = ref;
+    public setRef = (ref: XLSX.CellRef) => this.attributes.r = ref;
     public type = () => this.attributes.t;
     public style = () => parseInt(this.attributes.s, 10);
     public getValue = () => this.value;
-    public setValue = (value) => this.value = value
+    public setValue = (value: string) => this.value = value
     public formula = () => this.form;
     public address = () => XLSX.getCellAddress(this.ref());
 

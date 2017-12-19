@@ -5,13 +5,13 @@ import * as jsonata from 'jsonata';
 import { TYPE_COLUMN, TYPE_ROW, TYPE_SCALAR } from './types';
 
 //some functional helpers
-export const keys = obj => Object.keys(obj);
-export const values = obj => keys(obj).map(k => obj[k]);
-export const not = (predicate) => (value) => !predicate(value);
-export const contains = (arr, value) => arr.indexOf(value) !== -1;
+export const keys = (obj: Object) => Object.keys(obj);
+export const values = (obj: Object) => keys(obj).map(k => obj[k]);
+export const not = (predicate: Function) => (value) => !predicate(value);
+export const contains = <T>(arr: T[], value:T): boolean => arr.indexOf(value) !== -1;
 
 //zip file access
-export function readZip(xlsPath) {
+export function readZip(xlsPath: string) {
     return new Promise((resolve, reject) => {
         fs.readFile(xlsPath, 'binary', (err, res) => {
             if (err) { return reject(err); }
@@ -20,7 +20,7 @@ export function readZip(xlsPath) {
     })
 }
 
-export function writeZip(xlsPath, zip) {
+export function writeZip(xlsPath: string, zip) {
     return new Promise((resolve, reject) => {
         zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
             .pipe(fs.createWriteStream(xlsPath))
@@ -54,7 +54,7 @@ function formatDate(date: string, format: string = 'yyyy-mm-dd'): string {
 
 //gets a value from an object using jsonata
 let cache = {};
-export const getValue = (obj, path) => {
+export const getValue = (obj: any, path: string) => {
     if (!cache[path]) {
         // replace excel single and double quotes with normal ones
         let expression = jsonata(path.replace(/”/g, '"').replace(/’/g,'’'));
@@ -66,7 +66,7 @@ export const getValue = (obj, path) => {
 }
 
 //template specifics
-export function templateType(str) {
+export function templateType(str: string) {
     if (!str) return null;
     switch (str.toString().substr(0, 2)) {
         case '${': return TYPE_SCALAR;
@@ -75,12 +75,12 @@ export function templateType(str) {
         default: return null;
     }
 }
-export const parseTemplate = (str) => {
+export const parseTemplate = (str: string) => {
     let type = templateType(str);
-    let path = str.match(/^[\$\|_]\{(.*?)\}$/)[1];
-    return { type, path };
+    let match = str.match(/^[\$\|_]\{(.*?)\}$/);
+    return { type, path: (match && match[1]) || '' };
 }
 
-export const matchRangeTemplate = (str) => {
+export const matchRangeTemplate = (str: string) => {
     return str && str.match(/^IFERROR\(N\((.+)?\),\s*"(.*?)"\)$/i);
 }

@@ -9,11 +9,11 @@ import * as XLSX from './XLSXUtil';
 import { select, select1, strToXml, xmlToStr, nodeAttribute } from './XMLUtil';
 
 //not really sure where to keep this
-export const parseScopeCell = (sheet) => (cell: Cell): Scope => {
+const parseScopeCell = (sheet: string) => (cell: Cell): Scope => {
     let ref = cell.ref();
     return new Scope(`${ref}:${ref}`, sheet, cell.getValue(), TYPE_CELL);
 }
-export const parseScopeRange = (sheet) => (cell: Cell): Scope => {
+const parseScopeRange = (sheet: string) => (cell: Cell): Scope => {
     let match = matchRangeTemplate(cell.formula());
     //should always match as we only accept range scope cells here
     if (!match) return new Scope('', '', '', '');
@@ -53,7 +53,7 @@ export default class Workbook {
         this.rootScope = this.createScopeTree(this.scopes);
         return this;
     }
-    public write(filename) {
+    public write(filename): Promise<{}> {
         //write back workbook, sheets and strings
         this.writeXML('workbook.xml', this.workbook);
         this.writeXML('sharedStrings.xml', this.strings);
@@ -62,7 +62,7 @@ export default class Workbook {
         return writeZip(filename, this.zip);
     }
 
-    public writeStream() {
+    public writeStream(): NodeJS.WriteStream {
         //write back workbook, sheets and strings
         this.writeXML('workbook.xml', this.workbook);
         this.writeXML('sharedStrings.xml', this.strings);
@@ -71,10 +71,10 @@ export default class Workbook {
         return writeStream(this.zip);
     }
 
-    public evaluate = (context) => this.rootScope.getChildren().forEach(this.interpolate(context));
+    public evaluate = (context: any) => this.rootScope.getChildren().forEach(this.interpolate(context));
 
     //sheet operations
-    public renameSheet = (from, to) => {
+    public renameSheet = (from: string, to: string) => {
         if (!contains(this.sheetNames(), from)) {
             throw new Error('specified sheet is not in the workbook');
         }
@@ -95,7 +95,7 @@ export default class Workbook {
     private getRel = (id: string): string => <string>select1(`string(//r:Relationship[@Id="${id}"]/@Target)`, this.rels);
 
     //private cell related
-    public getString = (index) => select1(`string(//xl:si[${index + 1}]/xl:t)`, this.strings);
+    public getString = (index: number) => select1(`string(//xl:si[${index + 1}]/xl:t)`, this.strings);
 
     //private scope related
     private getRangeScopes = () => {
@@ -274,7 +274,7 @@ export default class Workbook {
     private readXML = path => this.zip.file('xl/' + path).async('text').then(strToXml);
     private writeXML = (path, xml) => this.zip.file('xl/' + path, xmlToStr(xml));
 
-    static read(filename) {
+    static read(filename: string) {
         return new Workbook(filename).read();
     }
 }
