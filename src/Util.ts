@@ -29,6 +29,10 @@ export function writeZip(xlsPath, zip) {
     })
 }
 
+export function writeStream(zip) {
+    return zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
+}
+
 //gets a value from an object
 export const getValueOld = (obj, path) => {
     if (!(obj && path)) {

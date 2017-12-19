@@ -4,7 +4,7 @@ import Scope from './Scope';
 import RootScope from './RootScope';
 import Styles from './Styles';
 import Cell from './Cell';
-import { readZip, writeZip, contains, matchRangeTemplate } from './Util';
+import { readZip, writeZip, writeStream, contains, matchRangeTemplate } from './Util';
 import * as XLSX from './XLSXUtil';
 import { select, select1, strToXml, xmlToStr, nodeAttribute } from './XMLUtil';
 
@@ -60,6 +60,15 @@ export default class Workbook {
         // this.sheetPaths().forEach((path, index) => this.writeXML(path, this.sheets[index]));
         this.sheetPaths().forEach((path, index) => this.writeXML(path, this.worksheets[index]._writeSheetData()));
         return writeZip(filename, this.zip);
+    }
+
+    public writeStream() {
+        //write back workbook, sheets and strings
+        this.writeXML('workbook.xml', this.workbook);
+        this.writeXML('sharedStrings.xml', this.strings);
+        // this.sheetPaths().forEach((path, index) => this.writeXML(path, this.sheets[index]));
+        this.sheetPaths().forEach((path, index) => this.writeXML(path, this.worksheets[index]._writeSheetData()));
+        return writeStream(this.zip);
     }
 
     public evaluate = (context) => this.rootScope.getChildren().forEach(this.interpolate(context));
