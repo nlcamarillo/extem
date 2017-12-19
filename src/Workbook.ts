@@ -4,7 +4,7 @@ import Scope from './Scope';
 import RootScope from './RootScope';
 import Styles from './Styles';
 import Cell from './Cell';
-import { readZip, writeZip, writeStream, contains, matchRangeTemplate } from './Util';
+import { readZipFile, readData, writeZipFile, writeStream, contains, matchRangeTemplate } from './Util';
 import * as XLSX from './XLSXUtil';
 import { select, select1, strToXml, xmlToStr, nodeAttribute } from './XMLUtil';
 
@@ -30,7 +30,7 @@ export default class Workbook {
     private rels: Document;
     private scopes: Scope[];
     private rootScope: RootScope;
-    constructor(private filename: string) { }
+    constructor() { }
 
     private readZip = async (zip) => {
         this.zip = zip;
@@ -54,8 +54,12 @@ export default class Workbook {
     }
 
     //read and write
-    public async readFile() {
-        return this.readZip(await readZipFile(this.filename));
+    public async readFile(filename: string) {
+        return this.readZip(await readZipFile(filename));
+    }
+
+    public async read(data) {
+        return this.readZip(await readData(data));
     }
 
     private writeZip() {
@@ -279,6 +283,9 @@ export default class Workbook {
     private writeXML = (path, xml) => this.zip.file('xl/' + path, xmlToStr(xml));
 
     static readFile(filename: string) {
-        return new Workbook(filename).readFile();
+        return new Workbook().readFile(filename);
+    }
+    static read(data: Buffer) {
+        return new Workbook().read(data);
     }
 }

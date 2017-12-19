@@ -11,7 +11,7 @@ export const not = (predicate: Function) => (value) => !predicate(value);
 export const contains = <T>(arr: T[], value:T): boolean => arr.indexOf(value) !== -1;
 
 //zip file access
-export function readZip(xlsPath: string) {
+export function readZipFile(xlsPath: string) {
     return new Promise((resolve, reject) => {
         fs.readFile(xlsPath, 'binary', (err, res) => {
             if (err) { return reject(err); }
@@ -20,7 +20,11 @@ export function readZip(xlsPath: string) {
     })
 }
 
-export function writeZip(xlsPath: string, zip) {
+export function readData(data) {
+    return Promise.resolve(JSZip.loadAsync(data));
+}
+
+export function writeZipFile(xlsPath: string, zip) {
     return new Promise((resolve, reject) => {
         zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
             .pipe(fs.createWriteStream(xlsPath))
