@@ -32,9 +32,8 @@ export default class Workbook {
     private rootScope: RootScope;
     constructor(private filename: string) { }
 
-    //read and write
-    public async read() {
-        this.zip = await readZip(this.filename);
+    private readZip = async (zip) => {
+        this.zip = zip;
         //parse workbook, sheets and strings
         this.rels = await this.readXML('_rels/workbook.xml.rels');
         this.workbook = await this.readXML('workbook.xml');
@@ -53,22 +52,27 @@ export default class Workbook {
         this.rootScope = this.createScopeTree(this.scopes);
         return this;
     }
-    public write(filename): Promise<{}> {
+
+    //read and write
+    public async readFile() {
+        return this.readZip(await readZipFile(this.filename));
+    }
+
+    private writeZip() {
         //write back workbook, sheets and strings
         this.writeXML('workbook.xml', this.workbook);
         this.writeXML('sharedStrings.xml', this.strings);
         // this.sheetPaths().forEach((path, index) => this.writeXML(path, this.sheets[index]));
         this.sheetPaths().forEach((path, index) => this.writeXML(path, this.worksheets[index]._writeSheetData()));
-        return writeZip(filename, this.zip);
+        return this.zip;
+    }
+    
+    public writeFile(filename): Promise<{}> {
+        return writeZipFile(filename, this.writeZip());
     }
 
     public writeStream(): NodeJS.WriteStream {
-        //write back workbook, sheets and strings
-        this.writeXML('workbook.xml', this.workbook);
-        this.writeXML('sharedStrings.xml', this.strings);
-        // this.sheetPaths().forEach((path, index) => this.writeXML(path, this.sheets[index]));
-        this.sheetPaths().forEach((path, index) => this.writeXML(path, this.worksheets[index]._writeSheetData()));
-        return writeStream(this.zip);
+        return writeStream(this.writeZip());
     }
 
     public evaluate = (context: any) => this.rootScope.getChildren().forEach(this.interpolate(context));
@@ -274,7 +278,7 @@ export default class Workbook {
     private readXML = path => this.zip.file('xl/' + path).async('text').then(strToXml);
     private writeXML = (path, xml) => this.zip.file('xl/' + path, xmlToStr(xml));
 
-    static read(filename: string) {
-        return new Workbook(filename).read();
+    static readFile(filename: string) {
+        return new Workbook(filename).readFile();
     }
 }

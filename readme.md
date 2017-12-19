@@ -18,10 +18,10 @@ The supply your template and your data to Extem and create the resulting XSLX.
 
     };
 
-    Extem.read('./template.xlsx').then((template) => {
+    Extem.readFile('./template.xlsx').then((template) => {
         template.evaluate(myData);
 
-        return template.write('./generated.xlsx').then(() => {
+        return template.writeFile('./generated.xlsx').then(() => {
             console.log('written');
         })
     }).catch(console.log);
