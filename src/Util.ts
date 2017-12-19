@@ -33,19 +33,6 @@ export function writeStream(zip) {
     return zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
 }
 
-//gets a value from an object
-export const getValueOld = (obj, path) => {
-    if (!(obj && path)) {
-        return obj;
-    }
-    var parts = path.split('.');
-    var value = obj[parts.shift() || ''];
-    while (parts.length && value) {
-        value = value[parts.shift() || ''];
-    }
-    return value;
-}
-
 function formatDate(date: string, format: string = 'yyyy-mm-dd'): string {
     let d = new Date(date);
     if (isNaN(d.getTime())) return 'woop';
