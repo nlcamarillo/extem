@@ -12,7 +12,7 @@ The supply your template and your data to Extem and create the resulting XSLX.
 
 ## Usage
 
-    let Extem = require('extem');
+    let { Extem } = require('extem');
 
     let myData = {
 

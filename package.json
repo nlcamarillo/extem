@@ -1,12 +1,12 @@
 {
   "name": "extem",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublishOnly": "tsc"
+    "prepublish": "tsc"
   },
   "repository": "https://github.com/nlcamarillo/extem",
   "author": "Rikkert Koppes <rikkert@camarillo.nl",

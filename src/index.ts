@@ -1,3 +1,4 @@
-let Workbook = require('./Workbook');
+import Workbook from './Workbook'
 
-module.exports = Workbook;
+export { Workbook, Workbook as Extem };
+export default Workbook;
