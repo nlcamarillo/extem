@@ -235,6 +235,9 @@ export default class Workbook {
 
     private interpolateRange = (scope: Scope, value: any[], direction: XLSX.Direction) => {
         let size = scope.dim(direction);
+        if (!(value instanceof Array)) {
+            throw new Error('expected value to be an array when evaluating '+scope.getTemplate()+', but it is not: ' + JSON.stringify(value));
+        }
         scope.makeScalar();
         let clones = value.map((val, index) => {
             //create a scalar scope for the instance
