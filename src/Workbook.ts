@@ -7,6 +7,7 @@ import Cell from './Cell';
 import { readZipFile, readData, writeZipFile, writeStream, contains, matchRangeTemplate } from './Util';
 import * as XLSX from './XLSXUtil';
 import { select, select1, strToXml, xmlToStr, nodeAttribute } from './XMLUtil';
+import * as Util from './Util';
 
 //not really sure where to keep this
 const parseScopeCell = (sheet: string) => (cell: Cell): Scope => {
@@ -18,6 +19,14 @@ const parseScopeRange = (sheet: string) => (cell: Cell): Scope => {
     //should always match as we only accept range scope cells here
     if (!match) return new Scope('', '', '', '');
     return new Scope(match[1], sheet, match[2], TYPE_RANGE);
+}
+
+export interface EvaluateOptions {
+    i18n?: {
+        dayNames: string[];
+        monthNames: string[];
+        timeNames: string[];
+    }
 }
 
 export default class Workbook {
@@ -79,7 +88,12 @@ export default class Workbook {
         return writeStream(this.writeZip());
     }
 
-    public evaluate = (context: any) => this.rootScope.getChildren().forEach(this.interpolate(context));
+    public evaluate = (context: any, options?: EvaluateOptions) => {
+        if (options && options.i18n) {
+            Util.setI18n(options.i18n);
+        }
+        this.rootScope.getChildren().forEach(this.interpolate(context));
+    }
 
     //sheet operations
     public renameSheet = (from: string, to: string) => {

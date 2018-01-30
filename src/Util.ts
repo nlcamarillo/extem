@@ -43,6 +43,10 @@ function formatDate(date: string, format: string = 'yyyy-mm-dd'): string {
     return dateFormat(date, format);
 }
 
+export function setI18n(i18n) {
+    dateFormat.i18n = i18n;
+}
+
 //gets a value from an object using jsonata
 let cache = {};
 export const getValue = (obj: any, path: string) => {
