@@ -7,7 +7,13 @@ export type CellAddress = {
     r: number;
 }
 export type RangeAddress = CellAddress[];
+/**
+ * placeholder for a cell reference, like A1 of B100
+ */
 export type CellRef = string;
+/**
+ * placeholder for a range reference, like A1..I34
+ */
 export type RangeRef = string;
 
 //excel address related
