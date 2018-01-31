@@ -10,7 +10,12 @@ export type VNodeChild = VNode | string | number | boolean | undefined | null;
 
 export default (nodeName: string, attributes = {}, children: VNodeChild[] = []): VNode => (doc: Document): Element => {
     let el = doc.createElement(nodeName);
-    Object.keys(attributes).forEach(key => el.setAttribute(key, attributes[key]));
+    Object.keys(attributes).forEach(key => {
+        let value = attributes[key];
+        if (value !== undefined) {
+            el.setAttribute(key, attributes[key])
+        }
+    });
     children.forEach(vnode => {
         if (typeof vnode === 'function') { el.appendChild((<VNode>vnode)(doc)); }
         if (typeof vnode === 'string') { el.appendChild(doc.createTextNode(vnode)); }
