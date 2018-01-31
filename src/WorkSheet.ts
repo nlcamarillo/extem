@@ -25,8 +25,8 @@ export default class WorkSheet {
     public getCell = (ref: XLSX.CellRef): Cell => this.cellIndex[ref];
     public getCells = (): Cell[] => values(this.cellIndex);
     public getRanges = (): Cell[] => this.ranges;
-    public _getRow = (ref: XLSX.CellRef): Cell[] => values(this.rowIndex[ref]);
-    public _getCol = (ref: XLSX.CellRef): Cell[] => values(this.colIndex[ref]);
+    public _getRow = (ref: XLSX.CellRef): Cell[] => values(this.rowIndex[ref]).sort(Cell.sortDim(XLSX.HORIZONTAL));
+    public _getCol = (ref: XLSX.CellRef): Cell[] => values(this.colIndex[ref]).sort(Cell.sortDim(XLSX.VERTICAL));
     public _occupied = (ref: XLSX.CellRef): boolean => !!this.cellIndex[ref];
     private _addCellToIndex = (cell: Cell) => {
         let ref = cell.ref();
