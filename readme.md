@@ -4,7 +4,7 @@ An XLSX template engine.
 
 The idea is to create the desired layout in Excel, possibly by your client. This would include all sorts of styling, row heights, images, etc.
 
-The supply your template and your data to Extem and create the resulting XSLX.
+Then supply your template and your data to Extem and create the resulting XSLX.
 
 ## Install
 
