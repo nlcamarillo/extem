@@ -39,7 +39,7 @@ export function writeStream(zip) {
 
 function formatDate(date: string, format: string = 'yyyy-mm-dd'): string {
     let d = new Date(date);
-    if (isNaN(d.getTime())) return 'woop';
+    if (isNaN(d.getTime())) return '';
     return dateFormat(date, format);
 }
 
@@ -54,7 +54,7 @@ export const getValue = (obj: any, path: string) => {
         // replace excel single and double quotes with normal ones
         let expression = jsonata(path.replace(/”/g, '"').replace(/’/g,'’'));
         expression.assign('formatDate', formatDate);
-        expression.assign('values', values);
+        // expression.assign('values', values);
         cache[path] = expression;
     }
     // let expression = jsonata(path);
