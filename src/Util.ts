@@ -54,6 +54,7 @@ export const getValue = (obj: any, path: string) => {
         // replace excel single and double quotes with normal ones
         let expression = jsonata(path.replace(/”/g, '"').replace(/’/g,'’'));
         expression.assign('formatDate', formatDate);
+        expression.assign('values', values);
         cache[path] = expression;
     }
     // let expression = jsonata(path);
