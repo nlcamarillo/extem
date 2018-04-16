@@ -26,7 +26,8 @@ export interface EvaluateOptions {
         dayNames: string[];
         monthNames: string[];
         timeNames: string[];
-    }
+    };
+    globals?: Util.JsonataGlobals
 }
 
 export default class Workbook {
@@ -39,6 +40,7 @@ export default class Workbook {
     private rels: Document;
     private scopes: Scope[];
     private rootScope: RootScope;
+    private globals?: Util.JsonataGlobals;
     constructor() { }
 
     private readZip = async (zip) => {
@@ -88,10 +90,11 @@ export default class Workbook {
         return writeStream(this.writeZip());
     }
 
-    public evaluate = (context: any, options?: EvaluateOptions) => {
-        if (options && options.i18n) {
+    public evaluate = (context: any, options: EvaluateOptions = {}) => {
+        if (options.i18n) {
             Util.setI18n(options.i18n);
         }
+        this.globals = options.globals;
         this.rootScope.getChildren().forEach(this.interpolate(context));
     }
 
@@ -286,7 +289,8 @@ export default class Workbook {
     }
 
     private interpolate = (context) => (scope: Scope) => {
-        let { value, type } = scope.evaluate(context);
+        let globals = this.globals;
+        let { value, type } = scope.evaluate(context, globals);
         // console.log(scope.getRange(), ':', type, value);
         switch (type) {
             case TYPE_SCALAR: return this.interpolateScalar(value, scope);

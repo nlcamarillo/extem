@@ -18,8 +18,12 @@ Then supply your template and your data to Extem and create the resulting XSLX.
 
     };
 
+    let globals = {
+        foo: (a, b) => a    // this becomes available in the Jsonata scope as $foo
+    }
+
     Extem.readFile('./template.xlsx').then((template) => {
-        template.evaluate(myData);
+        template.evaluate(myData, globals);
 
         return template.writeFile('./generated.xlsx').then(() => {
             console.log('written');

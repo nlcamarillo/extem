@@ -1,5 +1,5 @@
 import * as XLSX from './XLSXUtil';
-import { getValue, parseTemplate } from './Util';
+import { getValue, parseTemplate, JsonataGlobals } from './Util';
 import RootScope from './RootScope';
 
 export default class Scope extends RootScope {
@@ -67,10 +67,10 @@ export default class Scope extends RootScope {
         }
     }
 
-    public evaluate = (context) => {
+    public evaluate = (context, globals?: JsonataGlobals) => {
         let { path, type } = parseTemplate(this.template);
         return {
-            value: getValue(context, path),
+            value: getValue(context, path, globals),
             type
         }
     }

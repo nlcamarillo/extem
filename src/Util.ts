@@ -49,11 +49,19 @@ export function setI18n(i18n) {
 
 //gets a value from an object using jsonata
 let cache = {};
-export const getValue = (obj: any, path: string) => {
+export interface JsonataGlobals {
+    [name: string]: (...args: any[]) => any;
+}
+export const getValue = (obj: any, path: string, globals: JsonataGlobals={}) => {
     if (!cache[path]) {
         // replace excel single and double quotes with normal ones
         let expression = jsonata(path.replace(/”/g, '"').replace(/’/g,'’'));
+        // for backwards compat, should be dropped in favor of globals
         expression.assign('formatDate', formatDate);
+        // additional globals
+        Object.keys(globals).forEach(key => {
+            expression.assign(key, globals[key]);
+        })
         // expression.assign('values', values);
         cache[path] = expression;
     }
